@@ -49,7 +49,7 @@ The project is built with **Java + Spring Boot**, following a **modular and iter
 ---
 
 ### 🚀 Phase 2: Event-Driven Messaging
-- [ ] Set up local **Kafka** instance with Docker  
+- [ ] Set up local **Kafka** instance with Docker
 - [ ] Create Kafka topics for order events (e.g., `order-placed`)
 - [ ] Integrate **Kafka Producer** in Order Service
 - [ ] Integrate **Kafka Consumer** in Restaurant Service
