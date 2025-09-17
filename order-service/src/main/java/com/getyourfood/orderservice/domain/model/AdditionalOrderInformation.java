@@ -8,5 +8,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AdditionalOrderInformation {
-    private String additionalInfo;
+  private String additionalInfo;
 }

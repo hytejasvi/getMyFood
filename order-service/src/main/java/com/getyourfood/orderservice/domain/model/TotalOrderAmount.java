@@ -8,5 +8,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TotalOrderAmount {
-    private double totalOrderAmount;
+  private double totalOrderAmount;
 }
