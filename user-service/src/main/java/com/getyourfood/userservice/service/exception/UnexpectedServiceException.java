@@ -1,7 +1,7 @@
 package com.getyourfood.userservice.service.exception;
 
-public class UnexpectedServiceException extends ServiceException{
-    public UnexpectedServiceException(String message, Throwable cause) {
-        super(message, cause);
-    }
+public class UnexpectedServiceException extends ServiceException {
+  public UnexpectedServiceException(String message, Throwable cause) {
+    super(message, cause);
+  }
 }

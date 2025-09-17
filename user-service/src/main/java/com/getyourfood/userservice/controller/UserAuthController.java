@@ -16,16 +16,15 @@ import org.springframework.web.bind.annotation.RestController;
 @Validated
 public class UserAuthController {
 
-    private final UserService userService;
+  private final UserService userService;
 
-    public UserAuthController(UserService userService) {
-        this.userService = userService;
-    }
+  public UserAuthController(UserService userService) {
+    this.userService = userService;
+  }
 
-    @PostMapping("/signup")
-    public ResponseEntity<?> createUser(@Valid @RequestBody UserSignupDto userSignupDto) {
-        userService.signUp(userSignupDto);
-        return ResponseEntity.status(HttpStatus.OK).build();
-    }
-
+  @PostMapping("/signup")
+  public ResponseEntity<?> createUser(@Valid @RequestBody UserSignupDto userSignupDto) {
+    userService.signUp(userSignupDto);
+    return ResponseEntity.status(HttpStatus.OK).build();
+  }
 }
