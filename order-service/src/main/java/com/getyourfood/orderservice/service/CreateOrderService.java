@@ -7,12 +7,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class CreateOrderService {
 
-    private final CreateOrderPort createOrderPort;
+  private final CreateOrderPort createOrderPort;
 
-    public CreateOrderService(CreateOrderPort createOrderPort) {
-        this.createOrderPort = createOrderPort;
-    }
-    public void invoke (Order newOrder) {
-        createOrderPort.createOrder(newOrder);
-    }
+  public CreateOrderService(CreateOrderPort createOrderPort) {
+    this.createOrderPort = createOrderPort;
+  }
+
+  public void invoke(Order newOrder) {
+    createOrderPort.createOrder(newOrder);
+  }
 }
