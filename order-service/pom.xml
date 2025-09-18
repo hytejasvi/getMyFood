@@ -14,7 +14,7 @@
     <groupId>com.getyourfood.orderservice</groupId>
     <artifactId>order-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>order-service</name>
+    <name>order service</name>
     <description>Order Service for GetYourFood</description>
 
     <dependencies>
