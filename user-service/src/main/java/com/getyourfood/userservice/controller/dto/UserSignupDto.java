@@ -1,13 +1,15 @@
 package com.getyourfood.userservice.controller.dto;
 
 import jakarta.validation.constraints.*;
+import lombok.Data;
 
+@Data
 public class UserSignupDto {
 
-  @NotBlank(message = "Name is required")
+  @NotBlank(message = "Name cannot be blank")
   private String name;
 
-  @Email(message = "Invalid email")
+  @Email(message = "Invalid email format")
   @NotBlank(message = "Email is required")
   private String email;
 
@@ -17,20 +19,19 @@ public class UserSignupDto {
   @NotBlank(message = "Password is required")
   private String password;
 
-  public @NotBlank String getName() {
+  public String getName() {
     return name;
   }
 
-  public @Email @NotBlank String getEmail() {
+  public String getEmail() {
     return email;
   }
 
-  public @Pattern(regexp = "\\d{10}", message = "Phone number must be exactly 10 digits") @NotBlank
-  String getPhoneNumber() {
+  public String getPhoneNumber() {
     return phoneNumber;
   }
 
-  public @NotBlank String getPassword() {
+  public String getPassword() {
     return password;
   }
 
