@@ -14,7 +14,7 @@
     <groupId>com.getyourfood.userservice</groupId>
     <artifactId>user-service</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <name>user-service</name>
+    <name>user service</name>
     <description>User Service for GetYourFood</description>
 
     <dependencies>
@@ -72,6 +72,12 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-test</artifactId>
+            <version>3.3.4</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
    <build>
@@ -91,6 +97,30 @@
                         </googleJavaFormat>
                     </java>
                 </configuration>
+            </plugin>
+            <!-- JaCoCo Plugin -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.12</version>
+                <executions>
+                    <!-- Prepare agent before tests -->
+                    <execution>
+                        <id>prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+
+                    <!-- Generate report after tests -->
+                    <execution>
+                        <id>report</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
