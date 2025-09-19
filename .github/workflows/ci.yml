@@ -27,20 +27,19 @@ jobs:
           distribution: temurin
           cache: maven
 
-      # 3️⃣ Spotless check (✅ runs for ALL services)
+      # 3️⃣ Spotless check (runs for all services)
       - name: Spotless Check
         run: |
           cd ${{ matrix.service }}
           mvn spotless:check
 
-      # 4️⃣ Run tests & generate coverage report (🚫 only for user-service)
+      # 4️⃣ Run tests & generate coverage (only if tests exist)
       - name: Run tests and generate coverage
-        if: matrix.service == 'user-service'
         run: |
           cd ${{ matrix.service }}
           mvn clean verify
 
-      # 5️⃣ Upload JaCoCo coverage report as artifact (🚫 only for user-service)
+      # 5️⃣ Upload JaCoCo report as artifact (optional)
       - name: Upload coverage report
         if: matrix.service == 'user-service'
         uses: actions/upload-artifact@v4
@@ -48,12 +47,11 @@ jobs:
           name: jacoco-report-${{ matrix.service }}
           path: ${{ matrix.service }}/target/site/jacoco
 
-      # 6️⃣ Upload coverage to Codecov (🚫 only for user-service)
+      # 6️⃣ Upload coverage to Codecov only if token exists
       - name: Upload coverage to Codecov
-        if: matrix.service == 'user-service'
+        if: matrix.service == 'user-service' && secrets.CODECOV_TOKEN != ''
         uses: codecov/codecov-action@v4
         with:
+          token: ${{ secrets.CODECOV_TOKEN }}
           files: ${{ matrix.service }}/target/site/jacoco/jacoco.xml
           fail_ci_if_error: true
-          # TODO: Remove the "if: matrix.service == 'user-service'" condition
-          # once test cases are added for order-service so coverage runs there too.
