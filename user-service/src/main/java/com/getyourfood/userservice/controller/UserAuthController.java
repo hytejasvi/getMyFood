@@ -31,8 +31,6 @@ public class UserAuthController {
 
   @PostMapping("/login")
   public ResponseEntity<?> userLogin(@Valid @RequestBody UserLoginDto userLoginDto) {
-    System.out.println(
-        "id: " + userLoginDto.getLoginId() + "::  password: " + userLoginDto.getPassword());
     String tokens = userService.userLogin(userLoginDto);
     return ResponseEntity.status(HttpStatus.OK).body(tokens);
   }
