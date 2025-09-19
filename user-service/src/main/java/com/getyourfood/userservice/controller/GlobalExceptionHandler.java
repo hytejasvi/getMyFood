@@ -2,6 +2,7 @@ package com.getyourfood.userservice.controller;
 
 import com.getyourfood.userservice.service.exception.UnexpectedServiceException;
 import com.getyourfood.userservice.service.exception.UserAlreadyRegisteredException;
+import com.getyourfood.userservice.service.exception.UserLoginException;
 import java.util.List;
 import lombok.Builder;
 import lombok.Data;
@@ -26,6 +27,11 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler
   public ResponseEntity<?> handleUserAlreadyRegisteredException(UserAlreadyRegisteredException e) {
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+  }
+
+  @ExceptionHandler
+  public ResponseEntity<?> handleUserLoginException(UserLoginException e) {
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
   }
 

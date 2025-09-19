@@ -1,5 +1,6 @@
 package com.getyourfood.userservice.controller;
 
+import com.getyourfood.userservice.controller.dto.UserLoginDto;
 import com.getyourfood.userservice.controller.dto.UserSignupDto;
 import com.getyourfood.userservice.service.UserService;
 import jakarta.validation.Valid;
@@ -26,5 +27,13 @@ public class UserAuthController {
   public ResponseEntity<?> createUser(@Valid @RequestBody UserSignupDto userSignupDto) {
     userService.signUp(userSignupDto);
     return ResponseEntity.status(HttpStatus.OK).build();
+  }
+
+  @PostMapping("/login")
+  public ResponseEntity<?> userLogin(@Valid @RequestBody UserLoginDto userLoginDto) {
+    System.out.println(
+        "id: " + userLoginDto.getLoginId() + "::  password: " + userLoginDto.getPassword());
+    String tokens = userService.userLogin(userLoginDto);
+    return ResponseEntity.status(HttpStatus.OK).body(tokens);
   }
 }
