@@ -1,9 +1,14 @@
 package com.getyourfood.userservice.service;
 
+import com.getyourfood.userservice.controller.dto.UserLoginDto;
 import com.getyourfood.userservice.controller.dto.UserSignupDto;
+import com.getyourfood.userservice.entity.AccountStatus;
+import com.getyourfood.userservice.entity.Role;
 import com.getyourfood.userservice.entity.User;
 import com.getyourfood.userservice.repository.UserRepository;
 import com.getyourfood.userservice.service.exception.UserAlreadyRegisteredException;
+import com.getyourfood.userservice.service.exception.UserLoginException;
+import com.getyourfood.userservice.util.JwtUtil;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -14,9 +19,13 @@ public class UserService {
 
   private final PasswordEncoder passwordEncoder;
 
-  public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+  private final JwtUtil jwtUtil;
+
+  public UserService(
+      UserRepository userRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil) {
     this.userRepository = userRepository;
     this.passwordEncoder = passwordEncoder;
+    this.jwtUtil = jwtUtil;
   }
 
   public void signUp(UserSignupDto dto) {
@@ -25,12 +34,32 @@ public class UserService {
     userRepository.save(user);
   }
 
+  public String userLogin(UserLoginDto loginDto) {
+
+    User user = validateLoginId(loginDto.getLoginId());
+
+    if (!passwordEncoder.matches(loginDto.getPassword(), user.getPassword())) {
+      throw new UserLoginException("Incorrect Password");
+    }
+
+    String tokens = jwtUtil.generateToken(user.getId(), user.getEmail(), user.getRole().toString());
+    return tokens;
+  }
+
+  private User validateLoginId(String loginId) {
+    return userRepository
+        .findByEmailOrPhoneNumber(loginId, loginId)
+        .orElseThrow(() -> new UserLoginException("Invalid Login details"));
+  }
+
   private User mapToUser(UserSignupDto dto) {
     User user = new User();
     user.setEmail(dto.getEmail());
     user.setUserName(dto.getName());
     user.setPhoneNumber(dto.getPhoneNumber());
     user.setPassword(passwordEncoder.encode(dto.getPassword()));
+    user.setRole(Role.CUSTOMER);
+    user.setAccountStatus(AccountStatus.ACTIVE);
     return user;
   }
 
