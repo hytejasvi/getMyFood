@@ -33,23 +33,24 @@ jobs:
           cd ${{ matrix.service }}
           mvn spotless:check
 
-      # 4️⃣ Run tests & generate coverage (only if tests exist)
+      # 4️⃣ Run tests & generate coverage (only for user-service)
       - name: Run tests and generate coverage
+        if: matrix.service == 'user-service'
         run: |
           cd ${{ matrix.service }}
           mvn clean verify
 
-      # 5️⃣ Upload JaCoCo report as artifact (optional)
-      - name: Upload coverage report
+      # 5️⃣ Upload JaCoCo report as artifact (only for user-service)
+      - name: Upload JaCoCo report
         if: matrix.service == 'user-service'
         uses: actions/upload-artifact@v4
         with:
           name: jacoco-report-${{ matrix.service }}
           path: ${{ matrix.service }}/target/site/jacoco
 
-      # 6️⃣ Upload coverage to Codecov only if token exists
+      # 6️⃣ Upload coverage to Codecov (optional, only if token exists)
       - name: Upload coverage to Codecov
-        if: matrix.service == 'user-service' && secrets.CODECOV_TOKEN != ''
+        if: matrix.service == 'user-service' && github.event.repository.private == true && env.CODECOV_TOKEN != ''
         uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
