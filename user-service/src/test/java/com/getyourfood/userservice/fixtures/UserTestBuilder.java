@@ -1,15 +1,21 @@
 package com.getyourfood.userservice.fixtures;
 
+import com.getyourfood.userservice.controller.dto.UserLoginDto;
 import com.getyourfood.userservice.controller.dto.UserSignupDto;
+import com.getyourfood.userservice.entity.AccountStatus;
+import com.getyourfood.userservice.entity.Role;
 import com.getyourfood.userservice.entity.User;
 
 public class UserTestBuilder {
 
+  public static final Long DEFAULT_USER_ID = 1L;
   public static final String DEFAULT_USER_NAME = "Test User";
   public static final String DEFAULT_PASSWORD = "password";
   public static final String DEFAULT_EMAIL = "test@example.com";
   public static final String DEFAULT_PHONE_NUMBER = "1234567890";
   public static final String DEFAULT_ENCODED_PASSWORD = "encodedPassword123";
+  public static final Role DEFAULT_ROLE = Role.valueOf("CUSTOMER");
+  public static final AccountStatus DEFAULT_STATUS = AccountStatus.valueOf("ACTIVE");
 
   private String userName = DEFAULT_USER_NAME;
   private String password = DEFAULT_PASSWORD;
@@ -40,12 +46,19 @@ public class UserTestBuilder {
     return new UserSignupDto(userName, email, phoneNumber, password);
   }
 
+  public UserLoginDto buildLoginDto() {
+    return new UserLoginDto(phoneNumber, password);
+  }
+
   public User buildUserEntity() {
     User user = new User();
+    user.setId(DEFAULT_USER_ID);
     user.setEmail(email);
     user.setUserName(userName);
     user.setPhoneNumber(phoneNumber);
     user.setPassword(DEFAULT_ENCODED_PASSWORD);
+    user.setRole(DEFAULT_ROLE);
+    user.setAccountStatus(DEFAULT_STATUS);
     return user;
   }
 
