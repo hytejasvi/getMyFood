@@ -9,10 +9,12 @@ import com.getyourfood.userservice.repository.UserRepository;
 import com.getyourfood.userservice.service.exception.UserAlreadyRegisteredException;
 import com.getyourfood.userservice.service.exception.UserLoginException;
 import com.getyourfood.userservice.util.JwtUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
+@Slf4j
 public class UserService {
 
   private final UserRepository userRepository;
@@ -34,6 +36,12 @@ public class UserService {
     userRepository.save(user);
   }
 
+  public void signUpRestaurantOwner(UserSignupDto dto) {
+    validateUniqueUser(dto);
+    User user = mapToRestaurantOwner(dto);
+    userRepository.save(user);
+  }
+
   public String userLogin(UserLoginDto loginDto) {
 
     User user = validateLoginId(loginDto.getLoginId());
@@ -43,6 +51,7 @@ public class UserService {
     }
 
     String tokens = jwtUtil.generateToken(user.getId(), user.getEmail(), user.getRole().toString());
+    log.info("Generated tokens: {}", tokens);
     return tokens;
   }
 
@@ -60,6 +69,17 @@ public class UserService {
     user.setPassword(passwordEncoder.encode(dto.getPassword()));
     user.setRole(Role.CUSTOMER);
     user.setAccountStatus(AccountStatus.ACTIVE);
+    return user;
+  }
+
+  private User mapToRestaurantOwner(UserSignupDto dto) {
+    User user = new User();
+    user.setEmail(dto.getEmail());
+    user.setUserName(dto.getName());
+    user.setPhoneNumber(dto.getPhoneNumber());
+    user.setPassword(passwordEncoder.encode(dto.getPassword()));
+    user.setRole(Role.RESTAURANT_OWNER);
+    user.setAccountStatus(AccountStatus.VERIFICATION_PENDING);
     return user;
   }
 
