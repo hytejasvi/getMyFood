@@ -7,9 +7,11 @@ import static org.mockito.Mockito.*;
 
 import com.getyourfood.userservice.controller.dto.UserLoginDto;
 import com.getyourfood.userservice.controller.dto.UserSignupDto;
+import com.getyourfood.userservice.entity.Role;
 import com.getyourfood.userservice.entity.User;
 import com.getyourfood.userservice.fixtures.UserTestBuilder;
 import com.getyourfood.userservice.repository.UserRepository;
+import com.getyourfood.userservice.service.exception.UnexpectedServiceException;
 import com.getyourfood.userservice.service.exception.UserAlreadyRegisteredException;
 import com.getyourfood.userservice.service.exception.UserLoginException;
 import com.getyourfood.userservice.util.JwtUtil;
@@ -53,6 +55,26 @@ public class UserServiceTest {
                         && user.getPhoneNumber().equals(userSignupDto.getPhoneNumber())
                         && user.getUserName().equals(userSignupDto.getName())
                         && user.getPassword().equals(DEFAULT_ENCODED_PASSWORD)));
+  }
+
+  @Test
+  void shouldSaveValidNewRestaurantOwner() {
+    UserSignupDto userSignupDto = new UserTestBuilder().buildSignupDto();
+
+    when(userRepository.findByEmailOrPhoneNumber(any(), any())).thenReturn(Optional.empty());
+    when(passwordEncoder.encode(any())).thenReturn(DEFAULT_ENCODED_PASSWORD);
+
+    userService.signUpRestaurantOwner(userSignupDto);
+
+    verify(userRepository, times(1))
+        .save(
+            argThat(
+                user ->
+                    user.getEmail().equals(userSignupDto.getEmail())
+                        && user.getPhoneNumber().equals(userSignupDto.getPhoneNumber())
+                        && user.getUserName().equals(userSignupDto.getName())
+                        && user.getPassword().equals(DEFAULT_ENCODED_PASSWORD)
+                        && user.getRole().equals(Role.valueOf("RESTAURANT_OWNER"))));
   }
 
   @Test
@@ -102,6 +124,22 @@ public class UserServiceTest {
         assertThrows(UserAlreadyRegisteredException.class, () -> userService.signUp(userSignupDto));
 
     assertEquals("Phone Number already registered", ex.getMessage());
+  }
+
+  @Test
+  void shouldThrowUnexpectedServiceException_WhenRepositoryFailsDuringSignUp() {
+    UserSignupDto userSignupDto = new UserTestBuilder().buildSignupDto();
+
+    when(userRepository.findByEmailOrPhoneNumber(any(), any())).thenReturn(Optional.empty());
+    when(passwordEncoder.encode(any())).thenReturn(DEFAULT_ENCODED_PASSWORD);
+    when(userRepository.save(any(User.class)))
+        .thenThrow(new RuntimeException("Database connection failed"));
+
+    UnexpectedServiceException ex =
+        assertThrows(UnexpectedServiceException.class, () -> userService.signUp(userSignupDto));
+
+    assertEquals("Database connection failed", ex.getMessage());
+    assertNotNull(ex.getCause());
   }
 
   @Test

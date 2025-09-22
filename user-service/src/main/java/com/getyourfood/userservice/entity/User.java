@@ -2,27 +2,43 @@ package com.getyourfood.userservice.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import lombok.*;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "users")
 public class User {
 
+  @Setter
+  @Getter
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
+  @Setter
+  @Getter
   @Column(nullable = false)
   private String userName;
 
+  @Setter
+  @Getter
   @Column(nullable = false, unique = true)
   private String phoneNumber;
 
+  @Setter
+  @Getter
   @Column(unique = true, nullable = false)
   private String email;
 
+  @Setter
+  @Getter
   @Column(nullable = false)
   private String password;
 
+  @Setter
+  @Getter
   @Enumerated(EnumType.STRING)
   @Column(nullable = false)
   private Role role;
@@ -31,13 +47,14 @@ public class User {
   @Column(nullable = false)
   private AccountStatus status;
 
+  @Getter
   @Column(nullable = false, updatable = false)
   private LocalDateTime createdAt;
 
   @Column(nullable = false)
   private LocalDateTime updatedAt;
 
-  public User(
+  /*public User(
       Long id,
       String userName,
       String phoneNumber,
@@ -52,71 +69,15 @@ public class User {
     this.password = password;
     this.role = role;
     this.status = status;
-  }
+  }*/
 
-  public User() {}
+  // public User() {}
 
-  public Long getId() {
-    return id;
-  }
-
-  public void setId(Long id) {
-    this.id = id;
-  }
-
-  public String getUserName() {
-    return userName;
-  }
-
-  public void setUserName(String userName) {
-    this.userName = userName;
-  }
-
-  public String getPhoneNumber() {
-    return phoneNumber;
-  }
-
-  public void setPhoneNumber(String phoneNumber) {
-    this.phoneNumber = phoneNumber;
-  }
-
-  public String getEmail() {
-    return email;
-  }
-
-  public void setEmail(String email) {
-    this.email = email;
-  }
-
-  public String getPassword() {
-    return password;
-  }
-
-  public void setPassword(String password) {
-    this.password = password;
-  }
-
-  public Role getRole() {
-    return role;
-  }
-
-  public void setRole(Role role) {
-    this.role = role;
-  }
-
-  public AccountStatus getAccountStatus() {
-    return status;
-  }
-
-  public void setAccountStatus(AccountStatus status) {
+  /*public void setAccountStatus(AccountStatus status) {
     this.status = status;
-  }
+  }*/
 
-  public LocalDateTime getCreatedAt() {
-    return createdAt;
-  }
-
-  public void setCreatedAt(LocalDateTime createdAt) {
+  /*public void setCreatedAt(LocalDateTime createdAt) {
     this.createdAt = createdAt;
   }
 
@@ -126,7 +87,7 @@ public class User {
 
   public void setUpdatedAt(LocalDateTime updatedAt) {
     this.updatedAt = updatedAt;
-  }
+  }*/
 
   @PrePersist
   protected void onCreate() {

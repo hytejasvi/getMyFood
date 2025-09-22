@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 public class JwtUtil {
 
   @Value("${jwt.secret}")
-  private String secret; // should be in teh application.yml
+  private String secret;
 
   @Value("${jwt.expiration}")
   private Long EXPIRATION_TIME;
