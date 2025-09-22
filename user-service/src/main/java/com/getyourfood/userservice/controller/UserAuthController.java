@@ -29,6 +29,12 @@ public class UserAuthController {
     return ResponseEntity.status(HttpStatus.CREATED).build();
   }
 
+  @PostMapping("/restaurant-owner/signup")
+  public ResponseEntity<?> createRestaurantOwner(@Valid @RequestBody UserSignupDto userSignupDto) {
+    userService.signUpRestaurantOwner(userSignupDto);
+    return ResponseEntity.status(HttpStatus.CREATED).build();
+  }
+
   @PostMapping("/login")
   public ResponseEntity<?> userLogin(@Valid @RequestBody UserLoginDto userLoginDto) {
     String tokens = userService.userLogin(userLoginDto);
