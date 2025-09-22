@@ -58,7 +58,7 @@ public class UserTestBuilder {
     user.setPhoneNumber(phoneNumber);
     user.setPassword(DEFAULT_ENCODED_PASSWORD);
     user.setRole(DEFAULT_ROLE);
-    user.setAccountStatus(DEFAULT_STATUS);
+    user.setStatus(DEFAULT_STATUS);
     return user;
   }
 

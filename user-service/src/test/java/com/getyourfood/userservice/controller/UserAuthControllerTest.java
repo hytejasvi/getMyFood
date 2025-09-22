@@ -45,12 +45,21 @@ public class UserAuthControllerTest {
   }
 
   @Test
+  void shouldCreateRestaurantOwner_WhenValidRequest() throws Exception {
+
+    UserSignupDto dto = new UserTestBuilder().buildSignupDto();
+
+    performSignup(Valid_SIGNUP_JSON).andExpect(status().isCreated());
+
+    verify(userService).signUp(dto);
+  }
+
+  @Test
   void shouldReturnToken_OnSuccessfulLogin() throws Exception {
     UserLoginDto loginDto = new UserLoginDto(DEFAULT_EMAIL, DEFAULT_PASSWORD);
     String expectedToken = "fake.jwt.token";
 
-    when(userService.userLogin(any(UserLoginDto.class)))
-        .thenReturn(expectedToken); // Or a UserLoginResponseDto
+    when(userService.userLogin(any(UserLoginDto.class))).thenReturn(expectedToken);
 
     mockMvc
         .perform(
@@ -58,7 +67,7 @@ public class UserAuthControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(loginDto)))
         .andExpect(status().isOk())
-        .andExpect(content().string(expectedToken)); // Or jsonPath("$.accessToken") if using DTO
+        .andExpect(content().string(expectedToken));
 
     verify(userService).userLogin(loginDto);
   }

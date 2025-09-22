@@ -6,6 +6,7 @@ import com.getyourfood.userservice.entity.AccountStatus;
 import com.getyourfood.userservice.entity.Role;
 import com.getyourfood.userservice.entity.User;
 import com.getyourfood.userservice.repository.UserRepository;
+import com.getyourfood.userservice.service.exception.UnexpectedServiceException;
 import com.getyourfood.userservice.service.exception.UserAlreadyRegisteredException;
 import com.getyourfood.userservice.service.exception.UserLoginException;
 import com.getyourfood.userservice.util.JwtUtil;
@@ -31,15 +32,27 @@ public class UserService {
   }
 
   public void signUp(UserSignupDto dto) {
-    validateUniqueUser(dto);
-    User user = mapToUser(dto);
-    userRepository.save(user);
+    try {
+      validateUniqueUser(dto);
+      User user = mapToUser(dto);
+      userRepository.save(user);
+    } catch (UserAlreadyRegisteredException e) {
+      throw e;
+    } catch (Exception e) {
+      throw new UnexpectedServiceException(e.getMessage(), e);
+    }
   }
 
   public void signUpRestaurantOwner(UserSignupDto dto) {
-    validateUniqueUser(dto);
-    User user = mapToRestaurantOwner(dto);
-    userRepository.save(user);
+    try {
+      validateUniqueUser(dto);
+      User user = mapToRestaurantOwner(dto);
+      userRepository.save(user);
+    } catch (UserAlreadyRegisteredException e) {
+      throw e;
+    } catch (Exception e) {
+      throw new UnexpectedServiceException(e.getMessage(), e);
+    }
   }
 
   public String userLogin(UserLoginDto loginDto) {
@@ -68,7 +81,7 @@ public class UserService {
     user.setPhoneNumber(dto.getPhoneNumber());
     user.setPassword(passwordEncoder.encode(dto.getPassword()));
     user.setRole(Role.CUSTOMER);
-    user.setAccountStatus(AccountStatus.ACTIVE);
+    user.setStatus(AccountStatus.ACTIVE);
     return user;
   }
 
@@ -79,7 +92,7 @@ public class UserService {
     user.setPhoneNumber(dto.getPhoneNumber());
     user.setPassword(passwordEncoder.encode(dto.getPassword()));
     user.setRole(Role.RESTAURANT_OWNER);
-    user.setAccountStatus(AccountStatus.VERIFICATION_PENDING);
+    user.setStatus(AccountStatus.VERIFICATION_PENDING);
     return user;
   }
 
