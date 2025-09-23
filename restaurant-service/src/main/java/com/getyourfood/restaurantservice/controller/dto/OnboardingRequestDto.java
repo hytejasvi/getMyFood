@@ -7,17 +7,13 @@ import lombok.Data;
 @Data
 public class OnboardingRequestDto {
 
-    @NotNull
-    private String restaurantName;
+  @NotNull private String restaurantName;
 
-    @NotNull
-    private String address;
+  @NotNull private String address;
 
-    @NotNull
-    @Pattern(regexp = "\\d{6}")
-    private String zipcode;
+  @NotNull
+  @Pattern(regexp = "\\d{6}")
+  private String zipcode;
 
-    @NotNull
-    private String registrationNumber;
-
+  @NotNull private String registrationNumber;
 }

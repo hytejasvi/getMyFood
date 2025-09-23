@@ -14,18 +14,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/internal/restaurants")
 public class RestaurantOnboardingController {
 
-    private final RestaurantService restaurantService;
+  private final RestaurantService restaurantService;
 
-    public RestaurantOnboardingController(RestaurantService restaurantService) {
-        this.restaurantService = restaurantService;
-    }
+  public RestaurantOnboardingController(RestaurantService restaurantService) {
+    this.restaurantService = restaurantService;
+  }
 
-    @PostMapping("/onboarding-stub")
-    public ResponseEntity<HttpStatus> createOnboardingStub(
-            @Valid
-            @RequestBody UserOnboardingStubDto onboardingStubDto
-    ) {
-        restaurantService.createRestaurantStub(onboardingStubDto);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
-    }
+  @PostMapping("/onboarding-stub")
+  public ResponseEntity<HttpStatus> createOnboardingStub(
+      @Valid @RequestBody UserOnboardingStubDto onboardingStubDto) {
+    restaurantService.createRestaurantStub(onboardingStubDto);
+    return ResponseEntity.status(HttpStatus.CREATED).build();
+  }
 }
