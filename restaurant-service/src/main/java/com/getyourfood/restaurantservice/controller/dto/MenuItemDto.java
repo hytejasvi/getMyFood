@@ -22,9 +22,9 @@ public class MenuItemDto {
   private String category;
 
   @Size(max = 1000, message = "Description cannot exceed 1000 characters")
-  private String description;
+  private String description = "";
 
-  private String imageUrl;
+  private String imageUrl = "";
 
   private String status =
       "NOT_AVAILABLE"; // default to NOT_AVAILABLE if nothing is provided in input

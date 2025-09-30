@@ -10,11 +10,11 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
-public class RestaurantService {
+public class RestaurantOwnerManagementService {
 
   private final RestaurantRepository restaurantRepository;
 
-  public RestaurantService(RestaurantRepository restaurantRepository) {
+  public RestaurantOwnerManagementService(RestaurantRepository restaurantRepository) {
     this.restaurantRepository = restaurantRepository;
   }
 
@@ -32,14 +32,18 @@ public class RestaurantService {
 
   public Restaurant completeRestaurantOnboarding(
       String existingUserId, OnboardingRequestDto requestDto) {
-    Long userId = Long.parseLong(existingUserId);
-    Optional<Restaurant> existingRestaurantOpt = restaurantRepository.findById(userId);
+    Optional<Restaurant> existingRestaurantOpt = getRestaurantById(existingUserId);
+
     if (existingRestaurantOpt.isPresent()) {
       Restaurant restaurant = mapToRestaurantEntity(existingRestaurantOpt.get(), requestDto);
       Restaurant savedRestaurant = restaurantRepository.save(restaurant);
       return savedRestaurant;
     }
     return null;
+  }
+
+  public Optional<Restaurant> getRestaurantById(String userId) {
+    return restaurantRepository.findById(Long.parseLong(userId));
   }
 
   private Restaurant mapToRestaurantEntity(

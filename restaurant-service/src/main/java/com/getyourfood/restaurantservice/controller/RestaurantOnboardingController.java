@@ -1,7 +1,7 @@
 package com.getyourfood.restaurantservice.controller;
 
 import com.getyourfood.restaurantservice.controller.dto.UserOnboardingStubDto;
-import com.getyourfood.restaurantservice.service.RestaurantService;
+import com.getyourfood.restaurantservice.service.RestaurantOwnerManagementService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,16 +14,17 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/internal/restaurants")
 public class RestaurantOnboardingController {
 
-  private final RestaurantService restaurantService;
+  private final RestaurantOwnerManagementService restaurantOwnerManagementService;
 
-  public RestaurantOnboardingController(RestaurantService restaurantService) {
-    this.restaurantService = restaurantService;
+  public RestaurantOnboardingController(
+      RestaurantOwnerManagementService restaurantOwnerManagementService) {
+    this.restaurantOwnerManagementService = restaurantOwnerManagementService;
   }
 
   @PostMapping("/onboarding-stub")
   public ResponseEntity<HttpStatus> createOnboardingStub(
       @Valid @RequestBody UserOnboardingStubDto onboardingStubDto) {
-    restaurantService.createRestaurantStub(onboardingStubDto);
+    restaurantOwnerManagementService.createRestaurantStub(onboardingStubDto);
     return ResponseEntity.status(HttpStatus.CREATED).build();
   }
 }
