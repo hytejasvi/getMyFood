@@ -33,6 +33,9 @@ public class SecurityConfig {
                     .permitAll()
                     .anyRequest()
                     .authenticated())
+        // .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults())); using this we can
+        // let spring handle the jwt authentication instead of having a separate authentication
+        // class.
         .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);
     return http.build();
   }

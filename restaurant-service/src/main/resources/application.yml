@@ -2,6 +2,11 @@ server:
   port: 8081 # Different port than user-service (8080)
 
 spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080
   datasource:
     url: jdbc:mysql://localhost:3306/getmyfood_restaurant
     username: root
