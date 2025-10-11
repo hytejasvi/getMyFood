@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        service: [ "user-service", "order-service" ]
+        service: [ "user-service", "order-service", "restaurant-service" ]
 
     steps:
       # 1️⃣ Checkout code

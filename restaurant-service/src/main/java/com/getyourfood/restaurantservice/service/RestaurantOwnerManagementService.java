@@ -4,9 +4,12 @@ import com.getyourfood.restaurantservice.controller.dto.OnboardingRequestDto;
 import com.getyourfood.restaurantservice.controller.dto.UserOnboardingStubDto;
 import com.getyourfood.restaurantservice.entity.Restaurant;
 import com.getyourfood.restaurantservice.repository.RestaurantRepository;
-import java.util.Optional;
+import com.getyourfood.restaurantservice.service.exception.RestaurantOwnerNotFoundException;
+import com.getyourfood.restaurantservice.service.exception.UnexpectedServiceException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Slf4j
@@ -19,31 +22,43 @@ public class RestaurantOwnerManagementService {
   }
 
   public void createRestaurantStub(UserOnboardingStubDto onboardingStubDto) {
-    Optional<Restaurant> existingRestaurant =
-        restaurantRepository.findById(onboardingStubDto.getUserId());
-    if (existingRestaurant.isPresent()) {
-      log.info("Restaurant stub already exists for userId: {}", onboardingStubDto.getUserId());
-      return;
+    try {
+      boolean restaurantExists = restaurantRepository.existsById(onboardingStubDto.getUserId());
+
+      if (!restaurantExists) {
+        Restaurant restaurant = mapToEntity(onboardingStubDto);
+        log.info(
+            "Creating new restaurant onboarding stub for user: {}", onboardingStubDto.getUserId());
+        restaurantRepository.save(restaurant);
+      } else {
+        log.warn(
+            "The Restaurant Stub is already created for user: {}", onboardingStubDto.getEmail());
+      }
+    } catch (Exception e) {
+      handleException(String.valueOf(onboardingStubDto.getUserId()), e);
     }
-    Restaurant restaurant = mapToEntity(onboardingStubDto);
-    log.info("Creating new restaurant onboarding stub for user: {}", onboardingStubDto.getUserId());
-    restaurantRepository.save(restaurant);
   }
 
+  @Transactional
   public Restaurant completeRestaurantOnboarding(
       String existingUserId, OnboardingRequestDto requestDto) {
-    Optional<Restaurant> existingRestaurantOpt = getRestaurantById(existingUserId);
+    try {
+      Long userId = Long.parseLong(existingUserId);
 
-    if (existingRestaurantOpt.isPresent()) {
-      Restaurant restaurant = mapToRestaurantEntity(existingRestaurantOpt.get(), requestDto);
-      Restaurant savedRestaurant = restaurantRepository.save(restaurant);
-      return savedRestaurant;
+      if (!restaurantRepository.existsById(userId)) {
+        log.error("Restaurant not found for user: {}", userId);
+        throw new RestaurantOwnerNotFoundException("Restaurant Owner is not registered");
+      }
+
+      Restaurant restaurant = restaurantRepository.getReferenceById(userId);
+      Restaurant updatedRestaurant = mapToRestaurantEntity(restaurant, requestDto);
+
+      return restaurantRepository.save(updatedRestaurant);
+
+    } catch (Exception e) {
+      handleException(existingUserId, e);
+      return null;
     }
-    return null;
-  }
-
-  public Optional<Restaurant> getRestaurantById(String userId) {
-    return restaurantRepository.findById(Long.parseLong(userId));
   }
 
   private Restaurant mapToRestaurantEntity(
@@ -62,5 +77,18 @@ public class RestaurantOwnerManagementService {
     restaurant.setEmail(onboardingStubDto.getEmail());
     restaurant.setStatus(Restaurant.OnboardingStatus.PENDING_ONBOARDING);
     return restaurant;
+  }
+
+  private void handleException(String userId, Exception e) {
+    if (e instanceof DataAccessException) {
+      log.error("Database error for user {}: {}", userId, e.getMessage(), e);
+      throw new UnexpectedServiceException("Service temporarily unavailable", e);
+    } else if (e instanceof IllegalArgumentException) {
+      log.error("Invalid argument for user {}: {}", userId, e.getMessage(), e);
+      throw new UnexpectedServiceException("Invalid user ID format");
+    } else {
+      log.error("Unexpected error for user {}: {}", userId, e.getMessage(), e);
+      throw new UnexpectedServiceException("An unexpected error occurred");
+    }
   }
 }
