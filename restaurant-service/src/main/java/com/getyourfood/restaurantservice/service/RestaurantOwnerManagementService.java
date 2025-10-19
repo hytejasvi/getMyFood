@@ -63,10 +63,10 @@ public class RestaurantOwnerManagementService {
 
   private Restaurant mapToRestaurantEntity(
       Restaurant existingRestaurantOpt, OnboardingRequestDto requestDto) {
-    existingRestaurantOpt.setName(requestDto.getRestaurantName());
-    existingRestaurantOpt.setAddress(requestDto.getAddress());
-    existingRestaurantOpt.setRegistrationNumber(requestDto.getRegistrationNumber());
-    existingRestaurantOpt.setZipcode(requestDto.getZipcode());
+    existingRestaurantOpt.setName(requestDto.restaurantName());
+    existingRestaurantOpt.setAddress(requestDto.address());
+    existingRestaurantOpt.setRegistrationNumber(requestDto.registrationNumber());
+    existingRestaurantOpt.setZipcode(requestDto.zipcode());
     existingRestaurantOpt.setStatus(Restaurant.OnboardingStatus.ACTIVE);
     return existingRestaurantOpt;
   }
